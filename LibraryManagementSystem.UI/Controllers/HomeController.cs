@@ -1,3 +1,5 @@
+using LibraryManagementSystem.DAL.Models;
+using LibraryManagementSystem.DAL.Repository.Interfaces;
 using LibraryManagementSystem.UI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -6,16 +8,18 @@ namespace LibraryManagementSystem.UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IGenericRepository<Book> _bookRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IGenericRepository<Book> bookRepository)
         {
-            _logger = logger;
+            _bookRepository = bookRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = await _bookRepository.GetAllAsync();
+
+            return View(model);
         }
 
         public IActionResult Privacy()

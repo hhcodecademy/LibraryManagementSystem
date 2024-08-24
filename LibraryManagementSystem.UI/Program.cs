@@ -16,7 +16,7 @@ namespace LibraryManagementSystem.UI
             {
                 ProgressBar = false,
                 PositionClass = ToastPositions.TopRight,
-                ShowDuration= 500
+                ShowDuration = 500
             };
 
             // Add services to the container.
@@ -29,6 +29,15 @@ namespace LibraryManagementSystem.UI
             });
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(opt =>
+            {
+                opt.IdleTimeout = TimeSpan.FromMinutes(5);
+                opt.Cookie.HttpOnly = false;
+                opt.Cookie.IsEssential = false;
+                opt.Cookie.Name = ".LMS.UI.Session";
+
+            });
 
 
             var app = builder.Build();
@@ -45,6 +54,8 @@ namespace LibraryManagementSystem.UI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
             app.UseNToastNotify();
